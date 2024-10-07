@@ -1,0 +1,40 @@
+Data Transfer, Arithmetic, and Logical Operations (ARM Assembly)
+asm
+Copy code
+AREA PRG6, CODE, READONLY
+ENTRY
+LDR R10, =5
+MOV R0, R10
+LDR R1, =3
+ADD R2, R0, R1
+SUB R3, R0, R1
+MUL R4, R0, R1
+AND R5, R0, R1
+ORR R6, R0, R1
+EOR R7, R0, R1
+END
+
+7.A C Program: Arithmetic Operations (ARM)
+
+
+#include <lpc21xx.h>
+main() {
+    int a = 6, b = 2, sum, sub, mul, div;
+    sum = a + b;
+    sub = a - b;
+    mul = a * b;
+    div = a / b;
+}
+
+
+7.B C Program: Bitwise Operations (ARM)
+
+
+#include <lpc21xx.h>
+main() {
+    int a = 10, b = 3, and, or, xor, not;
+    and = a & b;
+    or  = a | b;
+    xor = a ^ b;
+    not = ~a;
+}
