@@ -1,0 +1,395 @@
+1.Binary Search
+.MODEL SMALL
+.STACK
+.DATA
+M1 DB 'SEARCH FAILS $'
+M2 DB 'SEARCH IS SUCCESSFUL$'
+NO DW 8 ; Number of elements
+A DW 1,2,3,4,5,6,7,8 ; Sorted array
+KEY DW 8 ; Search key
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+MOV SI, 0 ; SI = low
+MOV DI, NO
+ADD DI, DI
+SUB DI, 2 ; DI = high
+BACK:
+CMP SI, DI
+JA LOC3 ; If low > high, search fails
+MOV BX, SI
+ADD BX, DI
+SHR BX, 1 ; mid = (low + high) / 2
+AND BX, 0FFFEH ; Make mid even
+MOV AX, A[BX] ; A[mid]
+CMP AX, KEY
+JE LOC1 ; If found, go to LOC1
+JB LOC2 ; If A[mid] < KEY, go right
+MOV DI, BX ; Move high to mid - 1
+SUB DI, 2
+JMP BACK
+LOC2:
+MOV SI, BX ; Move low to mid + 1
+ADD SI, 2
+JMP BACK
+LOC3:
+LEA DX, M1 ; Load "Search fails"
+JMP AHED
+LOC1:
+LEA DX, M2 ; Load "Search is successful"
+AHED:
+MOV AH, 9
+INT 21H ; Print message
+MOV AH, 4CH
+INT 21H ; Exit
+END
+
+2.Sorting
+.MODEL SMALL
+.STACK
+.DATA
+A DB 77, 42, 35, 12, 255, 05 ; Array to sort
+L DW $-A ; Length of array
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+MOV BX, L ; Load array length
+DEC BX ; N - 1 passes for sorting
+NXTPASS:
+MOV CX, BX ; Set number of comparisons
+MOV SI, 0 ; Start index
+NXTCOMP:
+MOV AL, A[SI] ; Load current element A[SI]
+INC SI ; Move to next element
+CMP AL, A[SI] ; Compare with next element
+JB NO_EXG ; If A[SI-1] < A[SI], skip exchange
+XCHG AL, A[SI] ; Swap A[SI-1] with A[SI]
+MOV A[SI-1], AL
+NO_EXG:
+LOOP NXTCOMP ; Repeat comparisons
+DEC BX ; Decrease pass count
+JNZ NXTPASS ; Repeat passes if needed
+MOV AH, 4CH
+INT 21H ; Exit program
+END
+
+3.Palindrome
+.MODEL SMALL
+.STACK
+.DATA
+STR DB "MODEL$" ; Input string
+LEN EQU $-1-STR ; String length
+RSTR DB 10 DUP('$') ; Space for reversed string
+MSG DB "Reverse string is:$"
+MSG1 DB "String is Palindrome$"
+MSG2 DB "String is Not Palindrome$"
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+MOV ES, AX
+LEA SI, STR
+LEA DI, RSTR
+ADD DI, LEN - 1
+MOV CX, LEN
+RPT:
+MOV AL, [SI]
+MOV [DI], AL
+INC SI
+DEC DI
+LOOP RPT
+; Display original string and reversed string
+LEA DX, STR
+MOV AH, 09H
+INT 21H
+LEA DX, MSG
+MOV AH, 09H
+INT 21H
+LEA DX, RSTR
+MOV AH, 09H
+INT 21H
+; Check if palindrome
+LEA SI, STR
+LEA DI, RSTR
+MOV CX, LEN
+REPE CMPSB
+JNE NOTPAL
+; Palindrome case
+LEA DX, MSG1
+MOV AH, 09H
+INT 21H
+JMP EXIT
+NOTPAL:
+; Not a palindrome case
+LEA DX, MSG2
+MOV AH, 09H
+INT 21H
+EXIT:
+MOV AH, 4CH
+INT 21H
+END
+.MODEL SMALL
+.STACK
+.DATA
+STR DB "MODEL$" ; Input string
+LEN EQU $-1-STR ; String length
+RSTR DB 10 DUP('$') ; Space for reversed string
+MSG DB "Reverse string is:$"
+MSG1 DB "String is Palindrome$"
+MSG2 DB "String is Not Palindrome$"
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+MOV ES, AX
+LEA SI, STR
+LEA DI, RSTR
+ADD DI, LEN - 1
+MOV CX, LEN
+RPT:
+MOV AL, [SI]
+MOV [DI], AL
+INC SI
+DEC DI
+LOOP RPT
+; Display original string and reversed string
+LEA DX, STR
+MOV AH, 09H
+INT 21H
+LEA DX, MSG
+MOV AH, 09H
+INT 21H
+LEA DX, RSTR
+MOV AH, 09H
+INT 21H
+; Check if palindrome
+LEA SI, STR
+LEA DI, RSTR
+MOV CX, LEN
+REPE CMPSB
+JNE NOTPAL
+; Palindrome case
+LEA DX, MSG1
+MOV AH, 09H
+INT 21H
+JMP EXIT
+NOTPAL:
+; Not a palindrome case
+LEA DX, MSG2
+MOV AH, 09H
+INT 21H
+EXIT:
+MOV AH, 4CH
+INT 21H
+END
+.MODEL SMALL
+.STACK
+.DATA
+STR DB "MODEL$" ; Input string
+LEN EQU $-1-STR ; String length
+RSTR DB 10 DUP('$') ; Space for reversed string
+MSG DB "Reverse string is:$"
+MSG1 DB "String is Palindrome$"
+MSG2 DB "String is Not Palindrome$"
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+MOV ES, AX
+LEA SI, STR
+LEA DI, RSTR
+ADD DI, LEN - 1
+MOV CX, LEN
+RPT:
+MOV AL, [SI]
+MOV [DI], AL
+INC SI
+DEC DI
+LOOP RPT
+; Display original string and reversed string
+LEA DX, STR
+MOV AH, 09H
+INT 21H
+LEA DX, MSG
+MOV AH, 09H
+INT 21H
+LEA DX, RSTR
+MOV AH, 09H
+INT 21H
+; Check if palindrome
+LEA SI, STR
+LEA DI, RSTR
+MOV CX, LEN
+REPE CMPSB
+JNE NOTPAL
+; Palindrome case
+LEA DX, MSG1
+MOV AH, 09H
+INT 21H
+JMP EXIT
+NOTPAL:
+; Not a palindrome case
+LEA DX, MSG2
+MOV AH, 09H
+INT 21H
+EXIT:
+MOV AH, 4CH
+INT 21H
+END
+
+4.NCR
+.MODEL SMALL
+.STACK
+.DATA
+N DW 6 ; Example: n = 6
+R DW 2 ; Example: r = 2
+NCR DW 0 ; Result storage
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+MOV AX, N
+MOV BX, R
+CALL NCR_PROC ; Calculate nCr
+MOV NCR, AX ; Store result in NCR
+MOV AH, 4CH
+INT 21H
+NCR_PROC PROC
+CMP BX, 0
+JZ CASE1 ; If r == 0, nCr = 1
+CMP AX, BX
+JZ CASE1 ; If n == r, nCr = 1
+CMP BX, 1
+JZ CASE2 ; If r == 1, nCr = n
+DEC AX ; n-1
+CALL PUSH_STATE
+CALL NCR_PROC ; Recursive call for (n-1)Cr
+POP_STATE
+DEC AX ; n-1
+DEC BX ; r-1
+CALL PUSH_STATE
+CALL NCR_PROC ; Recursive call for (n-1)C(r-1)
+ADD AX, CX ; Add the two results
+JMP FINISH
+CASE1:
+MOV AX, 1 ; Base case: nCr = 1
+JMP FINISH
+CASE2:
+MOV AX, CX ; Base case: nCr = n
+FINISH:
+RET
+PUSH_STATE PROC
+PUSH AX
+PUSH BX
+MOV CX, AX
+RET
+POP_STATE PROC
+POP BX
+POP AX
+RET
+NCR_PROC ENDP
+END
+
+
+5.Date
+.MODEL SMALL
+.STACK
+.DATA
+MSG1 DB "TIME IS: $"
+MSG2 DB 10,13,"DATE IS: $"
+.CODE
+MOV AX, @DATA
+MOV DS, AX
+; Display "TIME IS:"
+LEA DX, MSG1
+MOV AH, 09H
+INT 21H
+; Read system time
+MOV AH, 2CH
+INT 21H ; AL=hundredths, CH=hours, CL=minutes,
+DH=seconds
+; Display hours
+MOV AL, CH ; Move hours to AL
+CALL DISPLAY
+; Display ':'
+MOV DL, ':'
+MOV AH, 02H
+INT 21H
+; Display minutes
+MOV AL, CL ; Move minutes to AL
+CALL DISPLAY
+; Display ':'
+MOV DL, ':'
+MOV AH, 02H
+INT 21H
+; Display seconds
+MOV AL, DH ; Move seconds to AL
+CALL DISPLAY
+; New line for date
+LEA DX, MSG2
+MOV AH, 09H
+INT 21H
+; Read system date
+MOV AH, 2AH
+INT 21H ; AL = day of week, DH = month, DL = day, CX =
+year
+; Display day
+MOV AL, DL ; Move day to AL
+CALL DISPLAY
+; Display '/'
+MOV DL, '/'
+MOV AH, 02H
+INT 21H
+; Display month
+MOV AL, DH ; Move month to AL
+CALL DISPLAY
+; Display '/'
+MOV DL, '/'
+MOV AH, 02H
+INT 21H
+; Display year
+MOV AX, CX ; Move year to AX
+CALL DISPLAY_YEAR
+; Exit program
+MOV AH, 4CH
+INT 21H
+; Procedure to display time (hours, minutes, seconds) and date (day,
+month)
+DISPLAY PROC
+PUSH AX
+AAM ; Convert packed BCD in AL to unpacked (AH =
+tens, AL = units)
+ADD AX, 3030H ; Convert to ASCII
+MOV DL, AH ; Move tens digit to DL
+MOV AH, 02H
+INT 21H ; Display tens digit
+MOV DL, AL ; Move units digit to DL
+INT 21H ; Display units digit
+POP AX
+RET
+DISPLAY ENDP
+; Procedure to display the year (4 digits)
+DISPLAY_YEAR PROC
+PUSH AX
+MOV BX, 10
+; Extract first two digits of the year (e.g., 20 from 2024)
+MOV DX, 0
+DIV BX ; Divide AX by 10 (AX = 2024, DX = 4, AX = 202)
+CALL DISPLAY_DIGIT ; Display tens (AX = 20)
+; Extract last two digits of the year (e.g., 24 from 2024)
+MOV DX, 0
+DIV BX ; AX = 202 / 10 (AX = 20, DX = 2)
+CALL DISPLAY_DIGIT ; Display units (DX = 2)
+; Extract remaining digits
+MOV DX, 0
+DIV BX ; AX = 20 / 10 (AX = 2, DX = 0)
+CALL DISPLAY_DIGIT ; Display tens (AX = 2)
+POP AX
+RET
+DISPLAY_YEAR ENDP
+; Helper to display a single digit from AX
+DISPLAY_DIGIT PROC
+PUSH AX
+ADD DL, 30H ; Convert to ASCII
+MOV AH, 02H
+INT 21H ; Display the digit
+POP AX
+RET
+DISPLAY_DIGIT ENDP
+END

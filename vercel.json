@@ -1,0 +1,9 @@
+{
+    "routes": [
+      {
+        "src": "/mpmc1_5.txt",
+        "dest": "/mpmc1_5.txt"
+      }
+    ]
+  }
+  
