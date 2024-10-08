@@ -3,7 +3,7 @@ asm
 Copy code
 .MODEL SMALL
 .DATA
-STR DB "MODEL"
+STR DB "MODEL$"
 LEN EQU $-1-STR
 RSTR DB 10 DUP('$')
 MSG DB "Reverse string is:$"
