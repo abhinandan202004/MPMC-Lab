@@ -1,18 +1,21 @@
 Data Transfer, Arithmetic, and Logical Operations (ARM Assembly)
 asm
 Copy code
-AREA PRG6, CODE, READONLY
-ENTRY
-LDR R10, =5
-MOV R0, R10
-LDR R1, =3
-ADD R2, R0, R1
-SUB R3, R0, R1
-MUL R4, R0, R1
-AND R5, R0, R1
-ORR R6, R0, R1
-EOR R7, R0, R1
-END
+        AREA PRG6, CODE, READONLY  ; Define a code area
+        ENTRY                      ; Mark the entry point
+
+        LDR R0, =5                ; Load the value 5 into R0
+        LDR R1, =3                ; Load the value 3 into R1
+
+        ADD R2, R0, R1            ; R2 = R0 + R1 (5 + 3)
+        SUB R3, R0, R1            ; R3 = R0 - R1 (5 - 3)
+        MUL R4, R0, R1            ; R4 = R0 * R1 (5 * 3)
+        AND R5, R0, R1            ; R5 = R0 AND R1 (bitwise AND)
+        ORR R6, R0, R1            ; R6 = R0 OR R1 (bitwise OR)
+        EOR R7, R0, R1            ; R7 = R0 XOR R1 (bitwise XOR)
+
+        END                        ; Mark the end of the program
+
 
 7.A C Program: Arithmetic Operations (ARM)
 
