@@ -1,0 +1,79 @@
+.model small
+.stack 100h
+
+.data
+fire db 00h, 00h, 79h, 50h, 30h, 71h  ; data for 'FIRE'
+help db 73h, 38h, 79h, 76h, 00h, 00h  ; data for 'HELP'
+
+pa equ 0C800h   ; Address of port A
+pb equ 0C801h   ; Address of port B
+pc equ 0C802h   ; Address of port C
+ctr equ 0C803h  ; Control register
+
+.code
+main:
+    mov ax, @data
+    mov ds, ax
+
+    mov dx, ctr
+    mov al, 80h   ; Initialize control register
+    out dx, al
+
+disp:
+    ; Display FIRE
+    lea si, fire
+    call display
+
+    ; Display HELP
+    lea si, help
+    call display
+
+    ; Wait for key press
+    mov ah, 06h
+    mov dl, 0ffh
+    int 21h
+    jz disp
+
+    ; Exit program
+    mov ah, 4Ch
+    int 21h
+
+display proc
+    ; This routine displays data on a 7-segment display
+    mov cx, 6         ; Display 6 digits
+    mov bl, 00h       ; Starting from digit 0
+
+back:
+    mov al, bl        ; Select digit (bl = 0 to 5)
+    out dx, al        ; Send digit select signal to port C
+
+    mov dx, pa        ; Load data for 7-segment
+    lodsb             ; Load the data from memory (fire/help)
+    out dx, al        ; Output the data to port A
+
+    call delay        ; Delay to allow digit to be visible
+    inc bl            ; Move to the next digit
+    loop back         ; Loop for all 6 digits
+
+    ret
+display endp
+
+delay proc
+    ; This routine introduces a delay
+    push cx
+    push dx
+
+    mov cx, 0FFFh
+outloop:
+    mov dx, 0FFFh
+inloop:
+    dec dx
+    jnz inloop
+    loop outloop
+
+    pop dx
+    pop cx
+    ret
+delay endp
+
+end main

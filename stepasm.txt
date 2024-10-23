@@ -1,0 +1,84 @@
+.model small
+.stack 100h     ; Allocate stack memory
+
+.data
+count db 10     ; Number of iterations (or steps)
+pa equ 0c800h   ; Port address A
+pb equ 0c801h   ; Port address B
+pc equ 0c802h   ; Port address C
+cr equ 0c803h   ; Control register
+ctr equ 0c804h  ; Additional control register (CTR)
+
+.code
+
+
+main:
+    mov ax, @data
+    mov ds, ax
+
+    ; Initialize control register (CR) and CTR
+    mov dx, cr       ; Initialize the primary control register (CR)
+    mov al, 80h
+    out dx, al
+
+    mov dx, ctr      ; Initialize the additional control register (CTR)
+    mov al, 50h      ; Some value to initialize CTR
+    out dx, al
+
+    ; Rotate clockwise (right)
+    mov bh, count     ; Set count for loop
+    mov al, 88h       ; Initial value for rotating pattern
+
+up:
+    mov dx, pc        ; Output the pattern
+    out dx, al
+    call delay        ; Wait
+
+    mov dx, ctr       ; Update CTR during the clockwise rotation
+    mov al, 30h       ; Update CTR with some value
+    out dx, al
+
+    ror al, 1         ; Rotate right (clockwise)
+    dec bh            ; Decrement counter
+    jnz up            ; Repeat if bh is not zero
+
+    ; Rotate counterclockwise (left)
+    mov bh, count     ; Reset count
+    mov al, 88h       ; Initial value for reverse rotation
+
+back:
+    mov dx, pc        ; Output the pattern
+    out dx, al
+    call delay        ; Wait
+
+    mov dx, ctr       ; Update CTR during the counterclockwise rotation
+    mov al, 60h       ; Update CTR with some value
+    out dx, al
+
+    rol al, 1         ; Rotate left (counterclockwise)
+    dec bh            ; Decrement counter
+    jnz back          ; Repeat if bh is not zero
+
+    ; Terminate program
+    mov ah, 4Ch
+    int 21h
+
+; Delay procedure
+delay proc
+    push cx           ; Save CX and DX registers
+    push dx
+
+    mov cx, 8000h     ; Outer loop counter
+outloop:
+    mov dx, 4000h     ; Inner loop counter
+inloop:
+    dec dx            ; Decrement DX
+    jnz inloop        ; Jump back if DX is not zero
+    loop outloop      ; Loop outer counter CX times
+
+    pop dx            ; Restore DX
+    pop cx            ; Restore CX
+    ret
+delay endp
+
+end main

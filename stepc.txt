@@ -1,0 +1,73 @@
+
+#include <LPC21xx.h>
+
+void clock_wise(void);
+void anti_clock_wise(void);
+void delay(unsigned int); // Function prototype for delay
+
+unsigned int var1; // Variable for step control
+unsigned long int i = 0, j = 0, k = 0; // Loop counters
+
+int main(void) {
+    // Configure P1.20 to P1.23 as GPIO output
+    PINSEL2 = 0x00000000;    // Set P1.20 - P1.23 as GPIO
+    IO1DIR |= 0x00F00000;    // Set P1.20 to P1.23 as output
+    
+    while (1) {
+        // Rotate 50 times clockwise
+        for (j = 0; j < 50; j++) {
+            clock_wise();
+        }
+        
+        // Delay to observe rotation
+        for (k = 0; k < 65000; k++);
+        
+        // Rotate 50 times anti-clockwise
+        for (j = 0; j < 50; j++) {
+            anti_clock_wise();
+        }
+        
+        // Delay to observe rotation
+        for (k = 0; k < 65000; k++);
+    }
+}
+
+// Function for clockwise rotation of the stepper motor
+void clock_wise(void) {
+    var1 = 0x00080000; // Initial value for P1.20
+
+    // Perform 4 steps (A -> B -> C -> D stepping)
+    for (i = 0; i <= 3; i++) {
+        IO1CLR = 0x00F00000;  // Clear P1.20 to P1.23
+        IO1SET = var1;        // Set the current step
+        
+        // Delay for step speed variation
+        delay(3000);
+
+        var1 <<= 1;           // Shift to the next step
+    }
+}
+
+// Function for anti-clockwise rotation of the stepper motor
+void anti_clock_wise(void) {
+    var1 = 0x00800000; // Initial value for P1.23
+
+    // Perform 4 steps (D -> C -> B -> A stepping)
+    IO1CLR = 0x00F00000;  // Clear P1.20 to P1.23
+    IO1SET = var1;        // Set the current step
+    delay(3000);
+
+    for (i = 0; i < 3; i++) {
+        var1 >>= 1;        // Shift to the next step
+        IO1CLR = 0x00F00000;  // Clear P1.20 to P1.23
+        IO1SET = var1;        // Set the current step
+        
+        // Delay for step speed variation
+        delay(3000);
+    }
+}
+
+// Delay function for creating delay between steps
+void delay(unsigned int r) {
+    for (k = 0; k < r; k++); // Simple loop-based delay
+}
